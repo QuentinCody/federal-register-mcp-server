@@ -19,7 +19,7 @@ interface CodeModeEnv {
 export function registerCodeMode(
 	server: McpServer,
 	env: CodeModeEnv,
-) {
+): void {
 	const apiFetch = createFederalRegisterApiFetch();
 
 	const searchTool = createSearchTool({

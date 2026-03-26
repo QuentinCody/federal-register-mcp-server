@@ -6,7 +6,7 @@ interface QueryEnv {
 	FEDERAL_REGISTER_DATA_DO?: unknown;
 }
 
-export function registerQueryData(server: McpServer, env?: QueryEnv) {
+export function registerQueryData(server: McpServer, env?: QueryEnv): void {
 	const handler = createQueryDataHandler("FEDERAL_REGISTER_DATA_DO", "fedreg");
 
 	server.registerTool(

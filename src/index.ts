@@ -13,8 +13,7 @@ interface FederalRegisterEnv {
 }
 
 export class MyMCP extends McpAgent {
-	// biome-ignore lint/suspicious/noExplicitAny: agents and the SDK resolve McpServer through different private types.
-	server: any = new McpServer({
+	server = new McpServer({
 		name: "federal-register",
 		version: "0.1.0",
 	});
