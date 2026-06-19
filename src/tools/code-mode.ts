@@ -30,6 +30,8 @@ export function registerCodeMode(
 
 	const executeTool = createExecuteTool({
 		prefix: "fedreg",
+		// Verifiable provenance: fedreg_execute results carry a _meta.citation.
+		source: { id: "fedreg", name: "Federal Register", url: "https://www.federalregister.gov", license: "U.S. Public Domain" },
 		catalog: federalRegisterCatalog,
 		apiFetch,
 		doNamespace: env.FEDERAL_REGISTER_DATA_DO,
