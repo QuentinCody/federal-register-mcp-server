@@ -1,6 +1,7 @@
 import type { McpServer } from "@bio-mcp/shared/mcp";
-import { z } from "zod";
 import { createGetSchemaHandler } from "@bio-mcp/shared/staging/utils";
+import { z } from "zod";
+import {type FedregDataEnv, fedregResponse } from "../lib/tool-result";
 
 interface SchemaEnv {
 	FEDERAL_REGISTER_DATA_DO?: unknown;
@@ -9,8 +10,8 @@ interface SchemaEnv {
 export function registerGetSchema(server: McpServer, env?: SchemaEnv): void {
 	const handler = createGetSchemaHandler("FEDERAL_REGISTER_DATA_DO", "fedreg");
 
-	server.registerTool(
-		"fedreg_get_schema",
+	for (const name of ["fedreg_get_schema", "mcp_fedreg_get_schema"]) server.registerTool(
+		name,
 		{
 			title: "Get Staged Federal Register Data Schema",
 			description:
@@ -26,11 +27,11 @@ export function registerGetSchema(server: McpServer, env?: SchemaEnv): void {
 		},
 		async (args, extra) => {
 			const runtimeEnv = env || (extra as { env?: SchemaEnv })?.env || {};
-			return handler(
+			return fedregResponse(() => handler(
 				args as Record<string, unknown>,
 				runtimeEnv as Record<string, unknown>,
 				(extra as Record<string, unknown>),
-			);
+			), runtimeEnv as FedregDataEnv, name, extra, args);
 		},
 	);
 }

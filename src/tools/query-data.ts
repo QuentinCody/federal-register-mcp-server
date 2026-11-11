@@ -1,6 +1,7 @@
 import type { McpServer } from "@bio-mcp/shared/mcp";
-import { z } from "zod";
 import { createQueryDataHandler } from "@bio-mcp/shared/staging/utils";
+import { z } from "zod";
+import {type FedregDataEnv, fedregResponse } from "../lib/tool-result";
 
 interface QueryEnv {
 	FEDERAL_REGISTER_DATA_DO?: unknown;
@@ -9,8 +10,8 @@ interface QueryEnv {
 export function registerQueryData(server: McpServer, env?: QueryEnv): void {
 	const handler = createQueryDataHandler("FEDERAL_REGISTER_DATA_DO", "fedreg");
 
-	server.registerTool(
-		"fedreg_query_data",
+	for (const name of ["fedreg_query_data", "mcp_fedreg_query_data"]) server.registerTool(
+		name,
 		{
 			title: "Query Staged Federal Register Data",
 			description:
@@ -29,14 +30,13 @@ export function registerQueryData(server: McpServer, env?: QueryEnv): void {
 					.int()
 					.positive()
 					.max(10000)
-					.default(100)
 					.optional()
 					.describe("Maximum number of rows to return (default: 100)"),
 			},
 		},
 		async (args, extra) => {
 			const runtimeEnv = env || (extra as { env?: QueryEnv })?.env || {};
-			return handler(args as Record<string, unknown>, runtimeEnv as Record<string, unknown>);
+			return fedregResponse(() => handler(args as Record<string, unknown>, runtimeEnv as Record<string, unknown>), runtimeEnv as FedregDataEnv, name, extra, args);
 		},
 	);
 }

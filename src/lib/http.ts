@@ -1,5 +1,5 @@
 import type { ApiFetchFn } from "@bio-mcp/shared/codemode/catalog";
-import { restFetch, type RestFetchOptions } from "@bio-mcp/shared/http/rest-fetch";
+import { type RestFetchOptions, restFetch } from "@bio-mcp/shared/http/rest-fetch";
 
 const FEDERAL_REGISTER_BASE = "https://www.federalregister.gov/api/v1";
 
@@ -25,6 +25,7 @@ export function federalRegisterFetch(
 		retryOn: [429, 500, 502, 503],
 		retries: opts?.retries ?? 3,
 		timeout: opts?.timeout ?? 30_000,
+		deadlineMs: opts?.deadlineMs ?? 30_000,
 		userAgent: "federal-register-mcp-server/1.0 (bio-mcp)",
 	});
 }
